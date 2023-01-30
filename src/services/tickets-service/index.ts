@@ -22,12 +22,29 @@ async function getTicket(userId:number) {
 
 async function insertTicket(ticketType:number, userId:number) {
     
-    const enrolment = await enrollmentRepository.findUserById(userId)
-
-    if(!enrolment) throw notFoundError()
+const enrolment = await enrollmentRepository.findUserById(userId)
    
-   await createTicket(ticketType, userId) 
+   const newTicket = await createTicket(ticketType, enrolment.id) 
+   
+   const ticket = {
+    id: newTicket.id,
+    status: newTicket.status,
+    ticketTypeId: newTicket.ticketTypeId,
+    enrollmentId: newTicket.enrollmentId,
+    TicketType: {
+      id: newTicket.TicketType.id,
+      name: newTicket.TicketType.name,
+      price: newTicket.TicketType.price,
+      isRemote: newTicket.TicketType.isRemote,
+      includesHotel: newTicket.TicketType.includesHotel,
+      createdAt: newTicket.TicketType.createdAt,
+      updatedAt: newTicket.TicketType.updatedAt,
+    },
+    createdAt: newTicket.createdAt,
+    updatedAt: newTicket.updatedAt
+  };
 
+  return ticket
 }
 
 const ticketService = {

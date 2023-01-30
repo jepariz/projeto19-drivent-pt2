@@ -17,24 +17,46 @@ async function findTicketByUser(userId:number) {
     })
 }
 
-async function createTicket(ticketType:number, userId: number) {
+async function createTicket(ticketType:number, enrollment: number) {
 
-  const enrollment = await prisma.enrollment.findFirst({
-    where:{id: userId}
-  })
-
-  return prisma.ticket.create({
+return prisma.ticket.create({
     data:{
       ticketTypeId: ticketType,
-      enrollmentId: enrollment.id,
+      enrollmentId: enrollment,
       status: "RESERVED"
+    },
+    include: {
+      TicketType: true
     }
   })
-  
 }
+
+async function isTicketFromUser(ticketId:number, userId: number) {
+  
+  return prisma.ticket.findFirst({
+    where: {
+      AND: [{
+        id: ticketId
+      }, {
+        Enrollment: {
+          userId: userId
+        }
+      }]
+    }
+  })
+}
+
+async function findUniqueTicket(ticketId:number) {
+  return prisma.ticket.findUnique({
+    where: {id: ticketId}
+  })
+}
+
 
 export{
     findTicketsType,
     findTicketByUser,
-    createTicket
+    createTicket,
+    isTicketFromUser,
+    findUniqueTicket
 }

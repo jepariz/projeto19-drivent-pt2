@@ -29,17 +29,21 @@ async function getTicketByUser(req: AuthenticatedRequest, res: Response) {
   }
 
 async function createTicket(req: AuthenticatedRequest, res: Response) {
-    
-    const {ticketType} = req.body
 
+  if (req.body.ticketTypeId === undefined) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+    
+    const ticketTypeId = req.body.ticketTypeId as number
     const userId = req.userId
 
     try {
-        const insertTicket = await ticketService.insertTicket(ticketType, userId)
-        return res.status(httpStatus.OK).send(insertTicket);
+        const insertTicket = await ticketService.insertTicket(ticketTypeId, userId)
+        return res.status(httpStatus.CREATED).send(insertTicket);
       } catch (error) {
-              return res.sendStatus(httpStatus.NOT_FOUND);  
+        return res.sendStatus(httpStatus.NOT_FOUND);  
       }
+
 }
 
 
