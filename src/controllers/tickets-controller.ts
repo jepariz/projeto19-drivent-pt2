@@ -15,7 +15,7 @@ async function getTypes(req: AuthenticatedRequest, res: Response) {
 
 async function getTicketByUser(req: AuthenticatedRequest, res: Response) {
 
-    const {userId} = req 
+    const userId = req.userId
 
     try {
       const ticket = await ticketService.getTicket(userId)
@@ -28,8 +28,23 @@ async function getTicketByUser(req: AuthenticatedRequest, res: Response) {
     }
   }
 
+async function createTicket(req: AuthenticatedRequest, res: Response) {
+    
+    const {ticketType} = req.body
+
+    const userId = req.userId
+
+    try {
+        const insertTicket = await ticketService.insertTicket(ticketType, userId)
+        return res.status(httpStatus.OK).send(insertTicket);
+      } catch (error) {
+              return res.sendStatus(httpStatus.NOT_FOUND);  
+      }
+}
+
 
 export{
     getTypes,
-    getTicketByUser
+    getTicketByUser,
+    createTicket
 }
