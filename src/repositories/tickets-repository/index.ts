@@ -52,11 +52,35 @@ async function findUniqueTicket(ticketId:number) {
   })
 }
 
+async function updateTicketStatus(ticketId: number) {
+  return prisma.ticket.update({
+    where: {
+      id: ticketId
+    },
+    data: {
+      status: "PAID"
+    }
+  });
+}
+
+async function findTicketAndType(ticketId: number) {
+  return prisma.ticket.findFirst({
+    where: {
+      id: ticketId,
+    },
+    include: {
+      TicketType: true,
+    }
+  });
+}
+
 
 export{
     findTicketsType,
     findTicketByUser,
     createTicket,
     isTicketFromUser,
-    findUniqueTicket
+    findUniqueTicket,
+    updateTicketStatus,
+    findTicketAndType
 }

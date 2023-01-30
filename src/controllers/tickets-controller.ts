@@ -46,7 +46,6 @@ async function createTicket(req: AuthenticatedRequest, res: Response) {
 
 }
 
-
 export{
     getTypes,
     getTicketByUser,
